@@ -36,6 +36,7 @@ Type "slash b N" to get "ℕ"
 data ℕ : UU lzero where
     zero-ℕ : ℕ
     succ-ℕ : ℕ → ℕ
+{-# BUILTIN NATURAL ℕ #-}
 {-
 The induction principle is automatic from this definition using data types; we'll say more about the general form of data types later. 
 The following code defines the function guaranteed by the elimination rule, satisfying the two computation rules.
@@ -72,12 +73,29 @@ min-ℕ (succ-ℕ n) (succ-ℕ m) = succ-ℕ (min-ℕ n m)
 
 -- Exercise 3.2.a: define a binary function max-ℕ
 
+max-ℕ : ℕ → ℕ → ℕ
+max-ℕ zero-ℕ zero-ℕ = zero-ℕ
+max-ℕ zero-ℕ succ-m@(succ-ℕ m) = succ-m
+max-ℕ succ-n@(succ-ℕ n) zero-ℕ = succ-n
+max-ℕ (succ-ℕ n) (succ-ℕ m) = succ-ℕ (max-ℕ n m)
+
 -- Exercise 3.3.a: define the sequence triangular-number-ℕ of triangular numbers
+triangle : ℕ → ℕ
+triangle zero-ℕ = zero-ℕ
+triangle succ-n@(succ-ℕ n) = add-ℕ succ-n (triangle n)
 
 -- Exercise 3.3.b: define the function factorial-ℕ = λn.n!
+factorial : ℕ → ℕ
+factorial zero-ℕ = 1
+factorial succ-n@(succ-ℕ n) = mul-ℕ succ-n (factorial n)
 
 -- Exercise 3.4: define the binary function _choose-ℕ_
 -- here the underscore tells agda that you want to use infix notation for this function, eg "n choose-ℕ k"
+_choose-ℕ_ : ℕ → ℕ → ℕ
+zero-ℕ choose-ℕ zero-ℕ = 1
+zero-ℕ choose-ℕ succ-ℕ _ = 0
+succ-ℕ n choose-ℕ zero-ℕ = 1
+succ-ℕ n choose-ℕ succ-k@(succ-ℕ k) = add-ℕ (n choose-ℕ succ-k) (n choose-ℕ k)
 
 -- Exercise 3.5: define the Fibonacci sequence Fibonacci-ℕ
 -- A lot of new ideas are needed to do this using the induction principle (see Egbert's agda formalization) so I would recommend just using pattern matching.
@@ -86,5 +104,9 @@ min-ℕ (succ-ℕ n) (succ-ℕ m) = succ-ℕ (min-ℕ n m)
 
 -- Challenge Exercise: For any type A, for any function A → A, and for any natural number n, there is a function A → A defined as the n-fold composition of f.
 -- Define a function _fold-comp_ that encodes this construction.
+_fold-comp_ : ∀ {A} → ℕ → (A → A) → (A → A)
+zero-ℕ fold-comp f = λ a → a 
+succ-ℕ n fold-comp f = λ a → f ((n fold-comp f) a)
 
 -- Challenge Exercise: Define composition of dependent functions.
+-- _∘_ : (f : (a : A) → B
