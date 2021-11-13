@@ -53,6 +53,9 @@ add-ℕ m zero-ℕ = m
 add-ℕ m (succ-ℕ n) = succ-ℕ (add-ℕ m n)
 
 -- Exercise 3.1.a: define a binary function mul-ℕ
+mul-ℕ : ℕ → ℕ → ℕ
+mul-ℕ zero-ℕ m = zero-ℕ
+mul-ℕ (succ-ℕ n) m = add-ℕ m (mul-ℕ n m)
 
 -- Exercise 3.1.b: define a binary function exp-ℕ
 
